@@ -1,5 +1,5 @@
 import axios, { type AxiosInstance } from "axios"
-import type { AuthRequest, AuthResponse, Catalog, Product, ListResponse } from "../types/types.js"
+import type { AuthRequest, AuthResponse, Catalog, Product, ListResponse, Category } from "../types/types.js"
 class OrderCloudClient {
   client;
   accessToken: string | null = null;
@@ -114,42 +114,42 @@ class OrderCloudClient {
 
 
   // Product operations
-async listProducts(options?: {
-  catalogID?: string
-  categoryID?: string
-  supplierID?: string
-  search?: string
-  searchOn?: ("ID" | "ParentID" | "Name" | "Description")[]
-  searchType?: "AnyTerm" | "AllTermsAnyField" | "AllTermsSameField" | "ExactPhrase" | "ExactPhrasePrefix"
-  sortBy?: ("OwnerID" | "Name" | "ID" | "ParentID" | "!OwnerID" | "!Name" | "!ID" | "!ParentID")[]
-  page?: number
-  pageSize?: number
-  filters?: Record<string, any>
-}): Promise<ListResponse<Product>> {
-  this.ensureAuthenticated()
+  async listProducts(options?: {
+    catalogID?: string
+    categoryID?: string
+    supplierID?: string
+    search?: string
+    searchOn?: ("ID" | "ParentID" | "Name" | "Description")[]
+    searchType?: "AnyTerm" | "AllTermsAnyField" | "AllTermsSameField" | "ExactPhrase" | "ExactPhrasePrefix"
+    sortBy?: ("OwnerID" | "Name" | "ID" | "ParentID" | "!OwnerID" | "!Name" | "!ID" | "!ParentID")[]
+    page?: number
+    pageSize?: number
+    filters?: Record<string, any>
+  }): Promise<ListResponse<Product>> {
+    this.ensureAuthenticated()
 
-  const params: any = {}
+    const params: any = {}
 
-  if (options?.catalogID) params.catalogID = options.catalogID
-  if (options?.categoryID) params.categoryID = options.categoryID
-  if (options?.supplierID) params.supplierID = options.supplierID
-  if (options?.search) params.search = options.search
-  if (options?.searchOn) params.searchOn = options.searchOn.join(",")
-  if (options?.searchType) params.searchType = options.searchType
-  if (options?.sortBy) params.sortBy = options.sortBy.join(",")
-  if (options?.page) params.page = options.page
-  if (options?.pageSize) params.pageSize = options.pageSize
+    if (options?.catalogID) params.catalogID = options.catalogID
+    if (options?.categoryID) params.categoryID = options.categoryID
+    if (options?.supplierID) params.supplierID = options.supplierID
+    if (options?.search) params.search = options.search
+    if (options?.searchOn) params.searchOn = options.searchOn.join(",")
+    if (options?.searchType) params.searchType = options.searchType
+    if (options?.sortBy) params.sortBy = options.sortBy.join(",")
+    if (options?.page) params.page = options.page
+    if (options?.pageSize) params.pageSize = options.pageSize
 
-  // filters are just key/value pairs
-  if (options?.filters) {
-    Object.entries(options.filters).forEach(([key, value]) => {
-      params[`filters[${key}]`] = value
-    })
+    // filters are just key/value pairs
+    if (options?.filters) {
+      Object.entries(options.filters).forEach(([key, value]) => {
+        params[`filters[${key}]`] = value
+      })
+    }
+
+    const response = await this.client.get<ListResponse<Product>>("/v1/products", { params })
+    return response.data
   }
-
-  const response = await this.client.get<ListResponse<Product>>("/v1/products", { params })
-  return response.data
-}
 
 
 
@@ -175,6 +175,47 @@ async listProducts(options?: {
     this.ensureAuthenticated()
     await this.client.delete(`/v1/products/${productId}`)
   }
+
+  async getCategories(catalogId: string, page = 1, pageSize = 20): Promise<ListResponse<Category>> {
+  this.ensureAuthenticated()
+  const response = await this.client.get<ListResponse<Category>>(
+    `/v1/catalogs/${catalogId}/categories`,
+    { params: { page, pageSize } }
+  )
+  return response.data
+}
+
+async getCategory(catalogId: string, categoryId: string): Promise<Category> {
+  this.ensureAuthenticated()
+  const response = await this.client.get<Category>(
+    `/v1/catalogs/${catalogId}/categories/${categoryId}`
+  )
+  return response.data
+}
+
+async createCategory(catalogId: string, category: Category): Promise<Category> {
+  this.ensureAuthenticated()
+  const response = await this.client.post<Category>(
+    `/v1/catalogs/${catalogId}/categories`,
+    category
+  )
+  return response.data
+}
+
+async updateCategory(catalogId: string, categoryId: string, category: Partial<Category>): Promise<Category> {
+  this.ensureAuthenticated()
+  const response = await this.client.put<Category>(
+    `/v1/catalogs/${catalogId}/categories/${categoryId}`,
+    category
+  )
+  return response.data
+}
+
+async deleteCategory(catalogId: string, categoryId: string): Promise<void> {
+  this.ensureAuthenticated()
+  await this.client.delete(`/v1/catalogs/${catalogId}/categories/${categoryId}`)
+}
+
 }
 
 export { OrderCloudClient }

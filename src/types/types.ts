@@ -49,13 +49,26 @@ export interface Product {
   xp?: Record<string, any>
 }
 
+// Generic List Response
 export interface ListResponse<T> {
+  Items: T[]
   Meta: {
     Page: number
     PageSize: number
     TotalCount: number
     TotalPages: number
-    ItemRange: [number, number]
   }
-  Items: T[]
 }
+
+// Category type
+export interface Category {
+  ID?: string
+  Name: string
+  Description?: string
+  Active?: boolean
+  ParentID?: string | null
+  ChildCount?: number
+  ListOrder?: number
+  xp?: Record<string, any> // extended properties
+}
+
