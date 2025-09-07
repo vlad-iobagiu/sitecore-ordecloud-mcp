@@ -19,7 +19,7 @@ server.registerTool(
   },
   async ({ page, pageSize, catalogId }) => {
     try {
-      const result = await orderCloudClient.getProducts(page, pageSize, catalogId)
+      const result = await orderCloudClient.products.getProducts(page, pageSize, catalogId)
       return {
         content: [
           {
@@ -86,7 +86,7 @@ server.registerTool(
   },
   async (input) => {
     try {
-      const result = await orderCloudClient.listProducts(input)
+      const result = await  orderCloudClient.products.listProducts(input)
       return {
         content: [
           {
@@ -125,7 +125,7 @@ server.registerTool(
   },
   async ({ productId }) => {
     try {
-      const result = await orderCloudClient.getProduct(productId)
+      const result = await  orderCloudClient.products.getProduct(productId)
       return {
         content: [
           {
@@ -179,7 +179,7 @@ server.registerTool(
         ShipWidth: shipWidth,
         ShipLength: shipLength,
       }
-      const result = await orderCloudClient.createProduct(product)
+      const result = await  orderCloudClient.products.createProduct(product)
       return {
         content: [
           {
@@ -214,7 +214,7 @@ server.registerTool(
   },
   async ({ productId }) => {
     try {
-      await orderCloudClient.deleteProduct(productId)
+      await  orderCloudClient.products.deleteProduct(productId)
       return {
         content: [
           {

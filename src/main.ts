@@ -12,13 +12,12 @@ if (!ORDERCLOUD_USERNAME || !ORDERCLOUD_PASSWORD || !ORDERCLOUD_CLIENT_ID) {
   console.error("Missing required environment variables.")
   process.exit(1)
 }
-
-const orderCloudClient = new OrderCloudClient(
-  ORDERCLOUD_USERNAME,
-  ORDERCLOUD_PASSWORD,
-  ORDERCLOUD_CLIENT_ID,
-  ORDERCLOUD_SCOPE
-)
+const orderCloudClient = new OrderCloudClient({
+  username: ORDERCLOUD_USERNAME,
+  password: ORDERCLOUD_PASSWORD,
+  clientId: ORDERCLOUD_CLIENT_ID,
+  scope: ORDERCLOUD_SCOPE,
+})
 
 const server = new McpServer({ name: "OrderCloud Server", version: "1.0.0" })
 

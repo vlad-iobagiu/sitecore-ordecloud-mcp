@@ -3,12 +3,11 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js"
 import OrderCloudClient from "../ordercloud-client.js"
 
 export function registerCatalogTools(server: McpServer, orderCloudClient: OrderCloudClient) {
-  
-  // Tool: Get Catalogs
+  // Tool: List Catalogs
   server.registerTool(
-    "get_catalogs",
+    "list_catalogs",
     {
-      title: "Get Catalogs",
+      title: "List Catalogs",
       description: "Retrieve a list of catalogs from OrderCloud",
       inputSchema: {
         page: z.number().optional().default(1),
@@ -17,29 +16,23 @@ export function registerCatalogTools(server: McpServer, orderCloudClient: OrderC
     },
     async ({ page, pageSize }) => {
       try {
-        const result = await orderCloudClient.getCatalogs(page, pageSize)
+        const result = await orderCloudClient.catalogs.list(page, pageSize) // ✅ use list()
         return {
           content: [
-            {
-              type: "text",
-              text: JSON.stringify(result, null, 2),
-            },
+            { type: "text", text: JSON.stringify(result, null, 2) },
           ],
         }
       } catch (error) {
         return {
           content: [
-            {
-              type: "text",
-              text: `Error getting catalogs: ${error instanceof Error ? error.message : String(error)}`,
-            },
+            { type: "text", text: `Error listing catalogs: ${error instanceof Error ? error.message : String(error)}` },
           ],
           isError: true,
         }
       }
     },
   )
-  
+
   // Tool: Get Catalog by ID
   server.registerTool(
     "get_catalog",
@@ -52,29 +45,23 @@ export function registerCatalogTools(server: McpServer, orderCloudClient: OrderC
     },
     async ({ catalogId }) => {
       try {
-        const result = await orderCloudClient.getCatalog(catalogId)
+        const result = await orderCloudClient.catalogs.get(catalogId) // ✅ use catalogs.get()
         return {
           content: [
-            {
-              type: "text",
-              text: JSON.stringify(result, null, 2),
-            },
+            { type: "text", text: JSON.stringify(result, null, 2) },
           ],
         }
       } catch (error) {
         return {
           content: [
-            {
-              type: "text",
-              text: `Error getting catalog: ${error instanceof Error ? error.message : String(error)}`,
-            },
+            { type: "text", text: `Error getting catalog: ${error instanceof Error ? error.message : String(error)}` },
           ],
           isError: true,
         }
       }
     },
   )
-  
+
   // Tool: Create Catalog
   server.registerTool(
     "create_catalog",
@@ -90,35 +77,24 @@ export function registerCatalogTools(server: McpServer, orderCloudClient: OrderC
     },
     async ({ name, description, active, id }) => {
       try {
-        const catalog = {
-          ID: id,
-          Name: name,
-          Description: description,
-          Active: active,
-        }
-        const result = await orderCloudClient.createCatalog(catalog)
+        const catalog = { ID: id, Name: name, Description: description, Active: active }
+        const result = await orderCloudClient.catalogs.create(catalog) // ✅ use catalogs.create()
         return {
           content: [
-            {
-              type: "text",
-              text: JSON.stringify(result, null, 2),
-            },
+            { type: "text", text: JSON.stringify(result, null, 2) },
           ],
         }
       } catch (error) {
         return {
           content: [
-            {
-              type: "text",
-              text: `Error creating catalog: ${error instanceof Error ? error.message : String(error)}`,
-            },
+            { type: "text", text: `Error creating catalog: ${error instanceof Error ? error.message : String(error)}` },
           ],
           isError: true,
         }
       }
     },
   )
-  
+
   // Tool: Delete Catalog
   server.registerTool(
     "delete_catalog",
@@ -131,29 +107,20 @@ export function registerCatalogTools(server: McpServer, orderCloudClient: OrderC
     },
     async ({ catalogId }) => {
       try {
-        await orderCloudClient.deleteCatalog(catalogId)
+        await orderCloudClient.catalogs.delete(catalogId) // ✅ use catalogs.delete()
         return {
           content: [
-            {
-              type: "text",
-              text: `Catalog ${catalogId} deleted successfully`,
-            },
+            { type: "text", text: `Catalog ${catalogId} deleted successfully` },
           ],
         }
       } catch (error) {
         return {
           content: [
-            {
-              type: "text",
-              text: `Error deleting catalog: ${error instanceof Error ? error.message : String(error)}`,
-            },
+            { type: "text", text: `Error deleting catalog: ${error instanceof Error ? error.message : String(error)}` },
           ],
           isError: true,
         }
       }
     },
   )
-  
-
-  // add more catalog tools here...
 }

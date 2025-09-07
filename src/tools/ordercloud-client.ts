@@ -1,221 +1,65 @@
-import axios, { type AxiosInstance } from "axios"
-import type { AuthRequest, AuthResponse, Catalog, Product, ListResponse, Category } from "../types/types.js"
+import { AuthClient } from "./clients/auth-client.js"
+import { CatalogClient } from "./clients/catalog-client.js"
+import { ProductClient } from "./clients/product-client.js"
+import { CategoryClient } from "./clients/categories-client.js"
+
+interface OrderCloudClientOptions {
+  username: string
+  password: string
+  clientId: string
+  scope?: string
+  baseURL?: string
+}
+
 class OrderCloudClient {
-  client;
-  accessToken: string | null = null;
-  baseURL = "https://sandboxapi.ordercloud.io";
+  auth: AuthClient
+  catalogs: CatalogClient
+  products: ProductClient
+  categories: CategoryClient
 
-  constructor(
-    username?: string,
-    password?: string,
-    clientId?: string,
-    scope: string = "FullAccess"
-  ) {
-    this.client = axios.create({
-      baseURL: this.baseURL,
-    });
+  private username: string
+  private password: string
+  private clientId: string
+  private scope: string
 
-    // Add request interceptor to include auth token
-    this.client.interceptors.request.use((config) => {
-      if (this.accessToken) {
-        config.headers.Authorization = `Bearer ${this.accessToken}`;
-      }
-      return config;
-    });
+  constructor(options: OrderCloudClientOptions) {
+    const { username, password, clientId, scope = "FullAccess", baseURL } = options
 
-    // If credentials were passed, authenticate immediately
-    if (username && password && clientId) {
-      this.authenticate(username, clientId, password, scope).catch((err) => {
-        console.error("Auto-authentication failed:", err.message);
-      });
+    this.username = username
+    this.password = password
+    this.clientId = clientId
+    this.scope = scope
+
+    this.auth = new AuthClient(baseURL)
+    this.catalogs = new CatalogClient(baseURL)
+    this.products = new ProductClient(baseURL)
+    this.categories = new CategoryClient(baseURL)
+
+    // keep them in sync with same access token
+    const setToken = (token: string) => {
+      this.catalogs.setAccessToken(token)
+      this.products.setAccessToken(token)
+      this.categories.setAccessToken(token)
     }
-  }
 
-  async authenticate(
-    username: string,
-    clientId: string,
-    password: string,
-    scope: string = "FullAccess"
-  ) {
-    const authData = new URLSearchParams({
-      client_id: clientId,
-      grant_type: "password",
-      username,
-      password,
-      scope,
-    });
-
-    try {
-      const response = await this.client.post(
-        "/oauth/token",
-        authData.toString(),
-        {
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-        }
-      );
-      this.accessToken = response.data.access_token;
-    } catch (error: any) {
-      throw new Error(
-        `Authentication failed: ${error.response?.data?.error_description || error.message
-        }`
-      );
+    // patch auth client to propagate tokens
+    const originalAuth = this.auth.authenticate.bind(this.auth)
+    this.auth.authenticate = async (
+      username: string = this.username,
+      clientId: string = this.clientId,
+      password: string = this.password,
+      scope: string = this.scope
+    ) => {
+      const result = await originalAuth(username, clientId, password, scope)
+      setToken(result.access_token)
+      return result
     }
-  }
 
-  ensureAuthenticated() {
-    if (!this.accessToken) {
-      throw new Error("Not authenticated. Please call authenticate() first.");
-    }
-  }
-
-  // Catalog operations
-  async getCatalogs(page = 1, pageSize = 20): Promise<ListResponse<Catalog>> {
-    this.ensureAuthenticated()
-    const response = await this.client.get<ListResponse<Catalog>>("/v1/catalogs", {
-      params: { page, pageSize },
+    // Auto-authenticate on construction
+    this.auth.authenticate(this.username, this.clientId, this.password, this.scope).catch((err) => {
+      console.error("Auto-authentication failed:", err.message)
     })
-    return response.data
   }
-
-  async getCatalog(catalogId: string): Promise<Catalog> {
-    this.ensureAuthenticated()
-    const response = await this.client.get<Catalog>(`/v1/catalogs/${catalogId}`)
-    return response.data
-  }
-
-  async createCatalog(catalog: Catalog): Promise<Catalog> {
-    this.ensureAuthenticated()
-    const response = await this.client.post<Catalog>("/v1/catalogs", catalog)
-    return response.data
-  }
-
-  async updateCatalog(catalogId: string, catalog: Partial<Catalog>): Promise<Catalog> {
-    this.ensureAuthenticated()
-    const response = await this.client.put<Catalog>(`/v1/catalogs/${catalogId}`, catalog)
-    return response.data
-  }
-
-  async deleteCatalog(catalogId: string): Promise<void> {
-    this.ensureAuthenticated()
-    await this.client.delete(`/v1/catalogs/${catalogId}`)
-  }
-
-  // Product operations
-  async getProducts(page = 1, pageSize = 20, catalogID?: string): Promise<ListResponse<Product>> {
-    this.ensureAuthenticated()
-    const params: any = { page, pageSize }
-    if (catalogID) params.catalogID = catalogID
-
-    const response = await this.client.get<ListResponse<Product>>("v1/products", { params })
-    return response.data
-  }
-
-
-  // Product operations
-  async listProducts(options?: {
-    catalogID?: string
-    categoryID?: string
-    supplierID?: string
-    search?: string
-    searchOn?: ("ID" | "ParentID" | "Name" | "Description")[]
-    searchType?: "AnyTerm" | "AllTermsAnyField" | "AllTermsSameField" | "ExactPhrase" | "ExactPhrasePrefix"
-    sortBy?: ("OwnerID" | "Name" | "ID" | "ParentID" | "!OwnerID" | "!Name" | "!ID" | "!ParentID")[]
-    page?: number
-    pageSize?: number
-    filters?: Record<string, any>
-  }): Promise<ListResponse<Product>> {
-    this.ensureAuthenticated()
-
-    const params: any = {}
-
-    if (options?.catalogID) params.catalogID = options.catalogID
-    if (options?.categoryID) params.categoryID = options.categoryID
-    if (options?.supplierID) params.supplierID = options.supplierID
-    if (options?.search) params.search = options.search
-    if (options?.searchOn) params.searchOn = options.searchOn.join(",")
-    if (options?.searchType) params.searchType = options.searchType
-    if (options?.sortBy) params.sortBy = options.sortBy.join(",")
-    if (options?.page) params.page = options.page
-    if (options?.pageSize) params.pageSize = options.pageSize
-
-    // filters are just key/value pairs
-    if (options?.filters) {
-      Object.entries(options.filters).forEach(([key, value]) => {
-        params[`filters[${key}]`] = value
-      })
-    }
-
-    const response = await this.client.get<ListResponse<Product>>("/v1/products", { params })
-    return response.data
-  }
-
-
-
-  async getProduct(productId: string): Promise<Product> {
-    this.ensureAuthenticated()
-    const response = await this.client.get<Product>(`/v1/products/${productId}`)
-    return response.data
-  }
-
-  async createProduct(product: Product): Promise<Product> {
-    this.ensureAuthenticated()
-    const response = await this.client.post<Product>("/v1/products", product)
-    return response.data
-  }
-
-  async updateProduct(productId: string, product: Partial<Product>): Promise<Product> {
-    this.ensureAuthenticated()
-    const response = await this.client.put<Product>(`/v1/products/${productId}`, product)
-    return response.data
-  }
-
-  async deleteProduct(productId: string): Promise<void> {
-    this.ensureAuthenticated()
-    await this.client.delete(`/v1/products/${productId}`)
-  }
-
-  async getCategories(catalogId: string, page = 1, pageSize = 20): Promise<ListResponse<Category>> {
-  this.ensureAuthenticated()
-  const response = await this.client.get<ListResponse<Category>>(
-    `/v1/catalogs/${catalogId}/categories`,
-    { params: { page, pageSize } }
-  )
-  return response.data
-}
-
-async getCategory(catalogId: string, categoryId: string): Promise<Category> {
-  this.ensureAuthenticated()
-  const response = await this.client.get<Category>(
-    `/v1/catalogs/${catalogId}/categories/${categoryId}`
-  )
-  return response.data
-}
-
-async createCategory(catalogId: string, category: Category): Promise<Category> {
-  this.ensureAuthenticated()
-  const response = await this.client.post<Category>(
-    `/v1/catalogs/${catalogId}/categories`,
-    category
-  )
-  return response.data
-}
-
-async updateCategory(catalogId: string, categoryId: string, category: Partial<Category>): Promise<Category> {
-  this.ensureAuthenticated()
-  const response = await this.client.put<Category>(
-    `/v1/catalogs/${catalogId}/categories/${categoryId}`,
-    category
-  )
-  return response.data
-}
-
-async deleteCategory(catalogId: string, categoryId: string): Promise<void> {
-  this.ensureAuthenticated()
-  await this.client.delete(`/v1/catalogs/${catalogId}/categories/${categoryId}`)
-}
-
 }
 
 export { OrderCloudClient }

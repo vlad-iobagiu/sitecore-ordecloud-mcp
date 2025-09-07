@@ -19,7 +19,7 @@ export function registerCategoryTools(server: McpServer, orderCloudClient: Order
     },
     async ({ catalogId, page, pageSize }) => {
       try {
-        const result = await orderCloudClient.getCategories(catalogId, page, pageSize)
+        const result = await orderCloudClient.categories.getCategories(catalogId, page, pageSize)
         return {
           content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
         }
@@ -45,7 +45,7 @@ export function registerCategoryTools(server: McpServer, orderCloudClient: Order
     },
     async ({ catalogId, categoryId }) => {
       try {
-        const result = await orderCloudClient.getCategory(catalogId, categoryId)
+        const result = await orderCloudClient.categories.getCategory(catalogId, categoryId)
         return {
           content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
         }
@@ -75,7 +75,7 @@ export function registerCategoryTools(server: McpServer, orderCloudClient: Order
     async ({ catalogId, id, name, description, active }) => {
       try {
         const category = { ID: id, Name: name, Description: description, Active: active }
-        const result = await orderCloudClient.createCategory(catalogId, category)
+        const result = await orderCloudClient.categories.createCategory(catalogId, category)
         return {
           content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
         }
@@ -101,7 +101,7 @@ export function registerCategoryTools(server: McpServer, orderCloudClient: Order
     },
     async ({ catalogId, categoryId }) => {
       try {
-        await orderCloudClient.deleteCategory(catalogId, categoryId)
+        await orderCloudClient.categories.deleteCategory(catalogId, categoryId)
         return {
           content: [{ type: "text", text: `Category ${categoryId} deleted successfully from catalog ${catalogId}` }],
         }
