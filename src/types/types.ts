@@ -109,3 +109,11 @@ export interface Buyer {
   xp?: Record<string, any>
 }
 
+// Supplier type
+export interface Supplier {
+  ID?: string
+  Name: string
+  Active?: boolean
+  xp?: Record<string, any>
+}
+
