@@ -24,4 +24,12 @@ export class BaseClient {
       throw new Error("Not authenticated. Please call authenticate() first.")
     }
   }
+
+  getAccessToken(): string | null {
+    return this.accessToken
+  }
+
+  getClient(): AxiosInstance {
+    return this.client
+  }
 }
