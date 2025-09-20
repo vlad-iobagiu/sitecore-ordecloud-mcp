@@ -6,7 +6,16 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc"
+    "build": "tsc",
+    "bundle": "rollup -c",
+    "prepare": "npm run build",
+    "watch": "tsc --watch",
+    "inspector": "npx @modelcontextprotocol/inspector@latest build/main.js",
+    "start": "npm run build && node build/main.js",
+    "start:sse": "npm run build && cross-env TRANSPORT=sse node build/main.js",
+    "start:streamable-http": "npm run build && cross-env TRANSPORT=streamable-http node build/main.js",
+    "start:stdio": "npm run build && cross-env TRANSPORT=stdio node build/main.js",
+    "run": "npm run build && node build/main.js"
   },
   "keywords": [],
   "author": "",
@@ -15,6 +24,7 @@
     "@modelcontextprotocol/sdk": "^1.15.1",
     "axios": "^1.11.0",
     "dotenv": "^17.2.1",
+    "ordercloud-javascript-sdk": "^11.1.2",
     "zod": "^3.25.76"
   },
   "devDependencies": {
