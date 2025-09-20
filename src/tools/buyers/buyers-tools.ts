@@ -159,7 +159,7 @@ server.registerTool(
       const buyer: any = {}
       
       if (updateData.id) buyer.ID = updateData.id
-      if (updateData.name) buyer.Name = updateData.name
+      if (updateData.name !== undefined) buyer.Name = updateData.name
       if (updateData.active !== undefined) buyer.Active = updateData.active
       if (updateData.defaultCatalogId) buyer.DefaultCatalogID = updateData.defaultCatalogId
       if (updateData.xp) buyer.xp = updateData.xp

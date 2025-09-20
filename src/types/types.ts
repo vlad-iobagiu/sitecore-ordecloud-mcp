@@ -23,6 +23,26 @@ export interface Catalog {
   xp?: Record<string, any>
 }
 
+// Catalog Assignment type
+export interface CatalogAssignment {
+  CatalogID: string
+  BuyerID?: string
+  UserGroupID?: string
+  UserID?: string
+}
+
+// Catalog Bundle Assignment type
+export interface CatalogBundleAssignment {
+  CatalogID: string
+  BundleID: string
+}
+
+// Catalog Product Assignment type
+export interface CatalogProductAssignment {
+  CatalogID: string
+  ProductID: string
+}
+
 export interface Product {
   ID?: string
   Name: string
@@ -70,6 +90,26 @@ export interface Category {
   ChildCount?: number
   ListOrder?: number
   xp?: Record<string, any> // extended properties
+}
+
+// Category Assignment type
+export interface CategoryAssignment {
+  CategoryID: string
+  BuyerID?: string
+  UserGroupID?: string
+  UserID?: string
+}
+
+// Category Bundle Assignment type
+export interface CategoryBundleAssignment {
+  CategoryID: string
+  BundleID: string
+}
+
+// Category Product Assignment type
+export interface CategoryProductAssignment {
+  CategoryID: string
+  ProductID: string
 }
 
 // Promotion type

@@ -180,8 +180,8 @@ server.registerTool(
       const priceSchedule: any = {}
       
       if (updateData.id) priceSchedule.ID = updateData.id
-      if (updateData.name) priceSchedule.Name = updateData.name
-      if (updateData.description) priceSchedule.Description = updateData.description
+      if (updateData.name !== undefined) priceSchedule.Name = updateData.name
+      if (updateData.description !== undefined) priceSchedule.Description = updateData.description
       if (updateData.minQuantity !== undefined) priceSchedule.MinQuantity = updateData.minQuantity
       if (updateData.maxQuantity !== undefined) priceSchedule.MaxQuantity = updateData.maxQuantity
       if (updateData.useCumulativeQuantity !== undefined) priceSchedule.UseCumulativeQuantity = updateData.useCumulativeQuantity
@@ -243,8 +243,8 @@ server.registerTool(
       const priceSchedule: any = {}
       
       if (updateData.id) priceSchedule.ID = updateData.id
-      if (updateData.name) priceSchedule.Name = updateData.name
-      if (updateData.description) priceSchedule.Description = updateData.description
+      if (updateData.name !== undefined) priceSchedule.Name = updateData.name
+      if (updateData.description !== undefined) priceSchedule.Description = updateData.description
       if (updateData.minQuantity !== undefined) priceSchedule.MinQuantity = updateData.minQuantity
       if (updateData.maxQuantity !== undefined) priceSchedule.MaxQuantity = updateData.maxQuantity
       if (updateData.useCumulativeQuantity !== undefined) priceSchedule.UseCumulativeQuantity = updateData.useCumulativeQuantity

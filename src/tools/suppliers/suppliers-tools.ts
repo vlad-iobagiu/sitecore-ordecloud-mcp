@@ -156,7 +156,7 @@ server.registerTool(
       const supplier: any = {}
       
       if (updateData.id) supplier.ID = updateData.id
-      if (updateData.name) supplier.Name = updateData.name
+      if (updateData.name !== undefined) supplier.Name = updateData.name
       if (updateData.active !== undefined) supplier.Active = updateData.active
       if (updateData.xp) supplier.xp = updateData.xp
       
@@ -203,7 +203,7 @@ server.registerTool(
       const supplier: any = {}
       
       if (updateData.id) supplier.ID = updateData.id
-      if (updateData.name) supplier.Name = updateData.name
+      if (updateData.name !== undefined) supplier.Name = updateData.name
       if (updateData.active !== undefined) supplier.Active = updateData.active
       if (updateData.xp) supplier.xp = updateData.xp
       
@@ -396,4 +396,9 @@ server.registerTool(
 )
 
 }
+
+
+
+
+
 
