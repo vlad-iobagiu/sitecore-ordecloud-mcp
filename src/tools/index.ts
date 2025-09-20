@@ -4,6 +4,7 @@ import { registerAuthTools } from "./authenticate/auth-tools.js"
 import { registerCatalogTools } from "./catalogs/catalog-tools.js"
 import { registerProductTools } from "./products/products-tools.js"
 import { registerCategoryTools } from "./categories/categories-tools.js"
+import { registerPromotionTools } from "./promotions/promotions-tools.js"
 import { registerDebugTools } from "./debug/debug-tools.js"
 
 export function registerAllTools(server: McpServer, orderCloudClient: OrderCloudClient) {
@@ -11,5 +12,6 @@ export function registerAllTools(server: McpServer, orderCloudClient: OrderCloud
   registerCatalogTools(server, orderCloudClient)
   registerProductTools(server, orderCloudClient)
   registerCategoryTools(server, orderCloudClient)
+  registerPromotionTools(server, orderCloudClient)
   registerDebugTools(server, orderCloudClient)
 }

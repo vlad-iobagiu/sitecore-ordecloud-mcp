@@ -2,6 +2,8 @@ import { AuthClient } from "./clients/auth-client.js"
 import { CatalogClient } from "./clients/catalog-client.js"
 import { ProductClient } from "./clients/product-client.js"
 import { CategoryClient } from "./clients/categories-client.js"
+import { PromotionClient } from "./clients/promotion-client.js"
+import { BuyerClient } from "./clients/buyer-client.js"
 
 interface OrderCloudClientOptions {
   username: string
@@ -16,6 +18,7 @@ class OrderCloudClient {
   catalogs: CatalogClient
   products: ProductClient
   categories: CategoryClient
+  promotions: PromotionClient
 
   private username: string
   private password: string
@@ -34,12 +37,14 @@ class OrderCloudClient {
     this.catalogs = new CatalogClient(baseURL)
     this.products = new ProductClient(baseURL)
     this.categories = new CategoryClient(baseURL)
+    this.promotions = new PromotionClient(baseURL)
 
     // keep them in sync with same access token
     const setToken = (token: string) => {
       this.catalogs.setAccessToken(token)
       this.products.setAccessToken(token)
       this.categories.setAccessToken(token)
+      this.promotions.setAccessToken(token)
     }
 
     // patch auth client to propagate tokens

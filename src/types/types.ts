@@ -72,3 +72,40 @@ export interface Category {
   xp?: Record<string, any> // extended properties
 }
 
+// Promotion type
+export interface Promotion {
+  ID?: string
+  LineItemLevel?: boolean
+  Code?: string
+  Name: string
+  RedemptionLimit?: number
+  RedemptionLimitPerUser?: number
+  RedemptionCount?: number
+  QuantityLimitPerOrder?: number
+  ItemLimitPerOrder?: number
+  ItemSortBy?: string
+  Description?: string
+  FinePrint?: string
+  StartDate?: string
+  ExpirationDate?: string
+  EligibleExpression?: string
+  ValueExpression?: string
+  CanCombine?: boolean
+  AllowAllBuyers?: boolean
+  OwnerID?: string
+  AutoApply?: boolean
+  Active?: boolean
+  UseIntegration?: boolean
+  Priority?: number
+  xp?: Record<string, any>
+}
+
+// Buyer type
+export interface Buyer {
+  ID?: string
+  Name: string
+  Active?: boolean
+  DefaultCatalogID?: string
+  xp?: Record<string, any>
+}
+
