@@ -117,3 +117,26 @@ export interface Supplier {
   xp?: Record<string, any>
 }
 
+// PriceBreak type
+export interface PriceBreak {
+  Quantity: number
+  Price: number
+  SalePrice?: number
+}
+
+// PriceSchedule type
+export interface PriceSchedule {
+  ID?: string
+  Name: string
+  Description?: string
+  MinQuantity?: number
+  MaxQuantity?: number
+  UseCumulativeQuantity?: boolean
+  RestrictedToQuantity?: boolean
+  OrderType?: "Standard" | "RFQ"
+  ApplyTax?: boolean
+  ApplyShipping?: boolean
+  Active?: boolean
+  xp?: Record<string, any>
+}
+
