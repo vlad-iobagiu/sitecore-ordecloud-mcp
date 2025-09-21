@@ -295,4 +295,329 @@ export function registerDebugTools(server: McpServer, orderCloudClient: OrderClo
       }
     }
   })
+
+  // Tool: Debug Promotion Creation
+  server.registerTool("debug_promotion_creation", {
+    title: "Debug Promotion Creation",
+    description: "Debug the createPromotion method with detailed logging and error information",
+    inputSchema: {
+      name: z.string(),
+      code: z.string().optional(),
+      description: z.string().optional(),
+      finePrint: z.string().optional(),
+      startDate: z.string().optional(),
+      expirationDate: z.string().optional(),
+      eligibleExpression: z.string().optional(),
+      valueExpression: z.string().optional(),
+      canCombine: z.boolean().optional().default(false),
+      allowAllBuyers: z.boolean().optional().default(false),
+      autoApply: z.boolean().optional().default(false),
+      active: z.boolean().optional().default(true),
+      priority: z.number().optional().default(0),
+      redemptionLimit: z.number().optional(),
+      redemptionLimitPerUser: z.number().optional(),
+      quantityLimitPerOrder: z.number().optional(),
+      itemLimitPerOrder: z.number().optional(),
+      itemSortBy: z.string().optional(),
+      lineItemLevel: z.boolean().optional().default(false),
+      useIntegration: z.boolean().optional().default(false),
+      ownerID: z.string().optional(),
+      xp: z.record(z.any()).optional(),
+    },
+  }, async (input) => {
+    try {
+      const startTime = Date.now()
+      
+      DebugLogger.log("debug_promotion_creation_start", input)
+      
+      // Test authentication first
+      if (!orderCloudClient.auth.getAccessToken()) {
+        throw new Error("Not authenticated. Please authenticate first.")
+      }
+      
+      // Build promotion object step by step for debugging
+      const promotion: any = {}
+      
+      if (input.name) {
+        promotion.Name = input.name
+        DebugLogger.log("debug_promotion_creation_field", { Name: input.name })
+      }
+      
+      if (input.code) {
+        promotion.Code = input.code
+        DebugLogger.log("debug_promotion_creation_field", { Code: input.code })
+      }
+      
+      if (input.description) {
+        promotion.Description = input.description
+        DebugLogger.log("debug_promotion_creation_field", { Description: input.description })
+      }
+      
+      if (input.finePrint) {
+        promotion.FinePrint = input.finePrint
+        DebugLogger.log("debug_promotion_creation_field", { FinePrint: input.finePrint })
+      }
+      
+      if (input.startDate) {
+        promotion.StartDate = input.startDate
+        DebugLogger.log("debug_promotion_creation_field", { StartDate: input.startDate })
+      }
+      
+      if (input.expirationDate) {
+        promotion.ExpirationDate = input.expirationDate
+        DebugLogger.log("debug_promotion_creation_field", { ExpirationDate: input.expirationDate })
+      }
+      
+      if (input.eligibleExpression) {
+        promotion.EligibleExpression = input.eligibleExpression
+        DebugLogger.log("debug_promotion_creation_field", { EligibleExpression: input.eligibleExpression })
+      }
+      
+      if (input.valueExpression) {
+        promotion.ValueExpression = input.valueExpression
+        DebugLogger.log("debug_promotion_creation_field", { ValueExpression: input.valueExpression })
+      }
+      
+      if (input.canCombine !== undefined) {
+        promotion.CanCombine = input.canCombine
+        DebugLogger.log("debug_promotion_creation_field", { CanCombine: input.canCombine })
+      }
+      
+      if (input.allowAllBuyers !== undefined) {
+        promotion.AllowAllBuyers = input.allowAllBuyers
+        DebugLogger.log("debug_promotion_creation_field", { AllowAllBuyers: input.allowAllBuyers })
+      }
+      
+      if (input.autoApply !== undefined) {
+        promotion.AutoApply = input.autoApply
+        DebugLogger.log("debug_promotion_creation_field", { AutoApply: input.autoApply })
+      }
+      
+      if (input.active !== undefined) {
+        promotion.Active = input.active
+        DebugLogger.log("debug_promotion_creation_field", { Active: input.active })
+      }
+      
+      if (input.priority !== undefined) {
+        promotion.Priority = input.priority
+        DebugLogger.log("debug_promotion_creation_field", { Priority: input.priority })
+      }
+      
+      if (input.redemptionLimit !== undefined) {
+        promotion.RedemptionLimit = input.redemptionLimit
+        DebugLogger.log("debug_promotion_creation_field", { RedemptionLimit: input.redemptionLimit })
+      }
+      
+      if (input.redemptionLimitPerUser !== undefined) {
+        promotion.RedemptionLimitPerUser = input.redemptionLimitPerUser
+        DebugLogger.log("debug_promotion_creation_field", { RedemptionLimitPerUser: input.redemptionLimitPerUser })
+      }
+      
+      if (input.quantityLimitPerOrder !== undefined) {
+        promotion.QuantityLimitPerOrder = input.quantityLimitPerOrder
+        DebugLogger.log("debug_promotion_creation_field", { QuantityLimitPerOrder: input.quantityLimitPerOrder })
+      }
+      
+      if (input.itemLimitPerOrder !== undefined) {
+        promotion.ItemLimitPerOrder = input.itemLimitPerOrder
+        DebugLogger.log("debug_promotion_creation_field", { ItemLimitPerOrder: input.itemLimitPerOrder })
+      }
+      
+      if (input.itemSortBy) {
+        promotion.ItemSortBy = input.itemSortBy
+        DebugLogger.log("debug_promotion_creation_field", { ItemSortBy: input.itemSortBy })
+      }
+      
+      if (input.lineItemLevel !== undefined) {
+        promotion.LineItemLevel = input.lineItemLevel
+        DebugLogger.log("debug_promotion_creation_field", { LineItemLevel: input.lineItemLevel })
+      }
+      
+      if (input.useIntegration !== undefined) {
+        promotion.UseIntegration = input.useIntegration
+        DebugLogger.log("debug_promotion_creation_field", { UseIntegration: input.useIntegration })
+      }
+      
+      if (input.ownerID) {
+        promotion.OwnerID = input.ownerID
+        DebugLogger.log("debug_promotion_creation_field", { OwnerID: input.ownerID })
+      }
+      
+      if (input.xp) {
+        promotion.xp = input.xp
+        DebugLogger.log("debug_promotion_creation_field", { xp: input.xp })
+      }
+      
+      DebugLogger.log("debug_promotion_creation_final_promotion", promotion)
+      
+      // Make the API call
+      const response = await orderCloudClient.promotions.getClient().post("v1/promotions", promotion)
+      const duration = Date.now() - startTime
+      
+      const result = {
+        success: true,
+        duration,
+        promotion,
+        response: {
+          status: response.status,
+          statusText: response.statusText,
+          data: response.data,
+          headers: response.headers
+        }
+      }
+      
+      DebugLogger.log("debug_promotion_creation_success", input, result, undefined, duration)
+      
+      return {
+        content: [
+          {
+            type: "text",
+            text: `DEBUG PROMOTION CREATION RESULT:\n${JSON.stringify(result, null, 2)}`
+          }
+        ]
+      }
+    } catch (error) {
+      const duration = Date.now() - Date.now()
+      const errorResult = {
+        success: false,
+        duration,
+        input,
+        error: {
+          message: error instanceof Error ? error.message : String(error),
+          stack: error instanceof Error ? error.stack : undefined,
+          response: (error as any)?.response ? {
+            status: (error as any).response.status,
+            statusText: (error as any).response.statusText,
+            data: (error as any).response.data,
+            headers: (error as any).response.headers
+          } : undefined
+        }
+      }
+      
+      DebugLogger.log("debug_promotion_creation_error", input, undefined, error as Error, duration)
+      
+      return {
+        content: [
+          {
+            type: "text",
+            text: `DEBUG PROMOTION CREATION ERROR:\n${JSON.stringify(errorResult, null, 2)}`
+          }
+        ],
+        isError: true
+      }
+    }
+  })
+
+  // Tool: Test Simple Promotion Creation
+  server.registerTool("test_simple_promotion", {
+    title: "Test Simple Promotion Creation",
+    description: "Test creating a promotion with minimal required fields to diagnose 400 errors",
+    inputSchema: {
+      name: z.string().default("Test Promotion"),
+      code: z.string().optional(),
+      includeCode: z.boolean().optional().default(true),
+    },
+  }, async (input) => {
+    try {
+      const startTime = Date.now()
+      
+      DebugLogger.log("test_simple_promotion_start", input)
+      
+      // Test authentication first
+      if (!orderCloudClient.auth.getAccessToken()) {
+        throw new Error("Not authenticated. Please authenticate first.")
+      }
+      
+      // Clean and validate the code field
+      let cleanCode = input.code
+      if (input.includeCode && cleanCode) {
+        // Remove spaces and invalid characters, keep only A-Z, a-z, 0-9, -, _
+        cleanCode = cleanCode.replace(/[^A-Za-z0-9\-_]/g, '')
+        if (cleanCode.length === 0) {
+          cleanCode = undefined // Remove empty codes
+        }
+      } else if (!input.includeCode) {
+        cleanCode = undefined // Don't include code field at all
+      }
+
+      // Create minimal promotion object with required fields
+      const promotion: any = {
+        Name: input.name,
+        // Required fields based on the error
+        EligibleExpression: "true", // Always eligible
+        ValueExpression: "0", // No discount
+        // Try with minimal required fields first
+        Active: true,
+        CanCombine: false,
+        AllowAllBuyers: true,
+        AutoApply: false,
+        Priority: 0,
+        LineItemLevel: false,
+        UseIntegration: false
+      }
+
+      // Only add Code if we have a valid one
+      if (cleanCode) {
+        promotion.Code = cleanCode
+      }
+      
+      DebugLogger.log("test_simple_promotion_object", promotion)
+      
+      // Make the API call
+      const response = await orderCloudClient.promotions.getClient().post("v1/promotions", promotion)
+      const duration = Date.now() - startTime
+      
+      const result = {
+        success: true,
+        duration,
+        promotion,
+        response: {
+          status: response.status,
+          statusText: response.statusText,
+          data: response.data,
+          headers: response.headers
+        }
+      }
+      
+      DebugLogger.log("test_simple_promotion_success", input, result, undefined, duration)
+      
+      return {
+        content: [
+          {
+            type: "text",
+            text: `SIMPLE PROMOTION TEST SUCCESS:\n${JSON.stringify(result, null, 2)}`
+          }
+        ]
+      }
+    } catch (error) {
+      const duration = Date.now() - Date.now()
+      const errorResult = {
+        success: false,
+        duration,
+        input,
+        error: {
+          message: error instanceof Error ? error.message : String(error),
+          stack: error instanceof Error ? error.stack : undefined,
+          response: (error as any)?.response ? {
+            status: (error as any).response.status,
+            statusText: (error as any).response.statusText,
+            data: (error as any).response.data,
+            headers: (error as any).response.headers
+          } : undefined
+        }
+      }
+      
+      DebugLogger.log("test_simple_promotion_error", input, undefined, error as Error, duration)
+      
+      return {
+        content: [
+          {
+            type: "text",
+            text: `SIMPLE PROMOTION TEST ERROR:\n${JSON.stringify(errorResult, null, 2)}`
+          }
+        ],
+        isError: true
+      }
+    }
+  })
 }

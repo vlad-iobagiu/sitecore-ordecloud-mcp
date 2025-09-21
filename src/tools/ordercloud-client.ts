@@ -6,6 +6,7 @@ import { PromotionClient } from "./clients/promotion-client.js"
 import { BuyerClient } from "./clients/buyer-client.js"
 import { SupplierClient } from "./clients/supplier-client.js"
 import { PriceScheduleClient } from "./clients/price-schedule-client.js"
+import { AddressClient } from "./clients/address-client.js"
 
 interface OrderCloudClientOptions {
   username: string
@@ -24,6 +25,7 @@ class OrderCloudClient {
   buyers: BuyerClient
   suppliers: SupplierClient
   priceSchedules: PriceScheduleClient
+  addresses: AddressClient
 
   private username: string
   private password: string
@@ -46,6 +48,7 @@ class OrderCloudClient {
     this.buyers = new BuyerClient(baseURL)
     this.suppliers = new SupplierClient(baseURL)
     this.priceSchedules = new PriceScheduleClient(baseURL)
+    this.addresses = new AddressClient(baseURL)
 
     // keep them in sync with same access token
     const setToken = (token: string) => {
@@ -56,6 +59,7 @@ class OrderCloudClient {
       this.buyers.setAccessToken(token)
       this.suppliers.setAccessToken(token)
       this.priceSchedules.setAccessToken(token)
+      this.addresses.setAccessToken(token)
     }
 
     // patch auth client to propagate tokens

@@ -69,6 +69,52 @@ export interface Product {
   xp?: Record<string, any>
 }
 
+// Product Assignment type
+export interface ProductAssignment {
+  ProductID: string
+  BuyerID?: string
+  UserGroupID?: string
+  UserID?: string
+}
+
+// Product Spec type
+export interface ProductSpec {
+  ID?: string
+  Name: string
+  OptionCount?: number
+  Required?: boolean
+  DefinesVariant?: boolean
+  ListOrder?: number
+  xp?: Record<string, any>
+}
+
+// Product Supplier type
+export interface ProductSupplier {
+  SupplierID: string
+  Cost?: number
+  UnitCost?: number
+  AllBuyersCanPurchase?: boolean
+  xp?: Record<string, any>
+}
+
+// Product Variant type
+export interface ProductVariant {
+  ID?: string
+  Name?: string
+  Description?: string
+  Active?: boolean
+  ShipWeight?: number
+  ShipHeight?: number
+  ShipWidth?: number
+  ShipLength?: number
+  Inventory?: {
+    Enabled?: boolean
+    NotificationPoint?: number
+    VariantLevelTracking?: boolean
+  }
+  xp?: Record<string, any>
+}
+
 // Generic List Response
 export interface ListResponse<T> {
   Items: T[]
@@ -178,5 +224,33 @@ export interface PriceSchedule {
   ApplyShipping?: boolean
   Active?: boolean
   xp?: Record<string, any>
+}
+
+// Address type
+export interface Address {
+  ID?: string
+  AddressName?: string
+  CompanyName?: string
+  FirstName?: string
+  LastName?: string
+  Street1?: string
+  Street2?: string
+  City?: string
+  State?: string
+  Zip?: string
+  Country?: string
+  Phone?: string
+  AddressType?: "Billing" | "Shipping"
+  xp?: Record<string, any>
+}
+
+// Address Assignment type
+export interface AddressAssignment {
+  AddressID: string
+  BuyerID?: string
+  UserGroupID?: string
+  UserID?: string
+  IsBilling?: boolean
+  IsShipping?: boolean
 }
 

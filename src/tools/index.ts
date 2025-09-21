@@ -8,6 +8,7 @@ import { registerPromotionTools } from "./promotions/promotions-tools.js"
 import { registerBuyerTools } from "./buyers/buyers-tools.js"
 import { registerSupplierTools } from "./suppliers/suppliers-tools.js"
 import { registerPriceScheduleTools } from "./price-schedules/price-schedules-tools.js"
+import { registerAddressTools } from "./addresses/addresses-tools.js"
 import { registerDebugTools } from "./debug/debug-tools.js"
 
 export function registerAllTools(server: McpServer, orderCloudClient: OrderCloudClient) {
@@ -19,5 +20,6 @@ export function registerAllTools(server: McpServer, orderCloudClient: OrderCloud
   registerBuyerTools(server, orderCloudClient)
   registerSupplierTools(server, orderCloudClient)
   registerPriceScheduleTools(server, orderCloudClient)
+  registerAddressTools(server, orderCloudClient)
   registerDebugTools(server, orderCloudClient)
 }
